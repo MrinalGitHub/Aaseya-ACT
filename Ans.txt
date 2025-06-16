@@ -1,0 +1,63 @@
+Q1:  How will you deal with missing data? Suggest methods.
+
+Ans: 
+Step 1: Identify Missing Values :(In Excel)Filter the salary column.Check for values 998 and 999.
+Method 1: Remove Rows with Missing Salary. When to use: If only a small number of entries are missing.
+How:Filter for 998 and 999.Select those rows and delete them.
+
+Method 2: Replace with Median Salary.When to use: If missing values are not too many and you want to preserve dataset size.
+Steps:Exclude 998 and 999 from calculation:
+Use this formula to calculate median excluding 998 and 999: =MEDIAN(IF((D2:D200<>998)*(D2:D200<>999), D2:D200))
+Replace missing salary with median:In a new column (e.g., E2), enter: =IF(OR(D2=998,D2=999), $F$2, D2)
+$F$2 is where your median is calculated.Drag this down.
+
+OR Use =AVERAGEIF(salary_range, "<998") or <999 to ignore placeholders.Fill 998/999 cells with the average value.
+
+Method 3: Predict Salary from Other Data. Advanced method if you have Excel’s Data Analysis Toolpak or use Power Query / Power BI.
+Predict salary using other columns like:gmat_tot, work_yrs, quarter
+You can perform linear regression or segmented averages, though this is better suited for Python or R.
+
+Method	                     How to do it in Excel	                                    When to use
+Delete missing rows	         Filter salary → remove rows with 998/999	                If <5–10% data missing
+Fill with median	         Use array formula to compute median without 998/999	    If data is missing at random
+Predict with features	     Use regression (if supported)	                            If you want high accuracy (advanced)
+
+
+Q2:  How will you deal with outliers? Suggest methods in code.
+
+Ans: 
+Step 1: Clean the Salary Column. Make sure 998 and 999 (missing values) are either blank or filtered out.
+
+Step 2: Calculate Quartiles and IQR. Assuming your salary data is in column D (from D2 to D200):
+1- Q1 (25th percentile): =QUARTILE(D2:D200, 1)
+2- Q3 (75th percentile): =QUARTILE(D2:D200, 3)
+3- IQR (Interquartile Range): =Q3 - Q1
+
+Step 3: Define Outlier Thresholds
+1- Lower Bound: =Q1 - 1.5 * IQR
+2- Upper Bound: =Q3 + 1.5 * IQR
+
+Step 4: Identify Outliers: In a new column (e.g., Column E), use this formula to mark outliers:
+=IF(OR(D2 < LowerBound, D2 > UpperBound), "Outlier", "Normal")
+Replace LowerBound and UpperBound with the cell references
+
+Step 5: Deal with Outliers
+Option A: Remove them - Use filters to hide rows marked as "Outlier" and exclude them from analysis.
+Option B: Cap/Floor them - Replace outlier values with bounds: =IF(D2 < LowerBound, LowerBound, IF(D2 > UpperBound, UpperBound, D2))
+
+Example:
+Let’s say:
+Q1 = 88,000
+Q3 = 121,000
+IQR = 33,000
+Then:
+Lower Bound = 88,000 – 49,500 = 38,500
+Upper Bound = 121,000 + 49,500 = 171,500
+Any salary outside ₹38,500 – ₹171,500 is an outlier.
+
+
+
+
+
+
+
